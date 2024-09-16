@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Order GPU</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}  <!-- Menampilkan form sebagai tabel -->
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="Order Now" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+{% endblock %}

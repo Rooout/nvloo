@@ -1,52 +1,6 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toko Notloo - Produk GPU</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-        }
-        .container {
-            margin: 20px auto;
-            max-width: 800px;
-        }
-        h1 {
-            text-align: center;
-        }
-        .product {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin: 10px 0;
-            padding: 15px;
-        }
-        .product h2 {
-            margin-top: 0;
-        }
-        .product p {
-            margin: 5px 0;
-        }
-        .price {
-            color: #2a9d8f;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Toko Notloo - GPU Terbaik</h1>
-    </header>
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Toko Notloo - GPU Terbaik</h1>
 
     <div class="container">
         <div class="product">
@@ -67,12 +21,43 @@
             <p>Performa tinggi dengan harga yang lebih bersahabat, RTX 4070 menawarkan kemampuan untuk menjalankan game AAA dan aplikasi grafis dengan pengaturan tinggi.</p>
         </div>
     </div>
-</body>
-<h5>Nama Aplikasi </h5>
-<p>{{ apk }}<p>
-<h5>Name: </h5>
-<p>{{ name }}<p>
-<h5>Class: </h5>
-<p>{{ class }}<p>
-...
-</html>
+    {% if not mood_entries %}
+    <p>Belum ada data mood pada mental health tracker.</p>
+    {% else %}
+    <table>
+      <tr>
+        <th>Mood Name</th>
+        <th>Time</th>
+        <th>Feeling</th>
+        <th>Mood Intensity</th>
+      </tr>
+    
+      {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
+      {% endcomment %} 
+      {% for mood_entry in mood_entries %}
+      <tr>
+        <td>{{OrderForm.product}}</td>
+        <td>{{OrderForm.quantity}}</td>
+        <td>{{OrderForm.customer_name}}</td>
+        <td>{{OrderForm.customer_email}}</td>
+        <td>{{OrderForm.address}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+    
+    <br />
+    
+    <a href="{% url 'main:order_gpu' %}">
+      <button>Buy New GPU</button>
+    </a>
+    </div>    
+    <h5>Nama Aplikasi: </h5>
+    <p>{{ apk }}</p>
+
+    <h5>Name: </h5>
+    <p>{{ name }}</p>
+
+    <h5>Class: </h5>
+    <p>{{ class }}</p>
+{% endblock content %}

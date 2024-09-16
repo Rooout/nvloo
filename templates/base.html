@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Nvloo{% endblock title %}</title>
+    
+    <!-- Link to static CSS file -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <!-- Block for additional meta tags or custom styles -->
+    {% block meta %} {% endblock meta %}
+  </head>
+
+  <body>
+    <!-- Header block, can be overridden in child templates -->
+    <header>
+      <h1>{% block header %}Welcome to Nvloo{% endblock header %}</h1>
+    </header>
+
+    <!-- Main content area that can be dynamically replaced in child templates -->
+    <main>
+      {% block content %}
+      <!-- Default content (can be replaced by child templates) -->
+      <p>Welcome to the Nvloo site!</p>
+      {% endblock content %}
+    </main>
+
+    <!-- Footer block -->
+    <footer>
+      <p>&copy; 2024 Nvloo. All rights reserved.</p>
+    </footer>
+
+    <!-- Block for loading custom scripts -->
+    {% block scripts %} {% endblock scripts %}
+  </body>
+</html>
