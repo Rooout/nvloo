@@ -1,63 +1,251 @@
 {% extends 'base.html' %}
+
 {% block content %}
-    <h1>Toko Notloo - GPU Terbaik</h1>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f6f9;
+  }
 
-    <div class="container">
-        <div class="product">
-            <h2>RTX 4090</h2>
-            <p class="price">Rp 30.000.000</p>
-            <p>GPU terbaik dari NVIDIA dengan performa tertinggi untuk gaming dan rendering grafis 3D. Cocok untuk para profesional dan gamer yang menginginkan kualitas visual maksimal.</p>
-        </div>
+  /* Header Section */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007bff;
+    padding: 15px 30px;
+    color: white;
+    border-bottom: 5px solid #0056b3;
+  }
 
-        <div class="product">
-            <h2>RTX 4080</h2>
-            <p class="price">Rp 25.000.000</p>
-            <p>GPU kelas atas dengan performa luar biasa untuk gaming dan pekerjaan berat seperti rendering video dan pemodelan 3D. Pilihan tepat untuk pengguna yang menginginkan performa tinggi dengan harga lebih terjangkau dibandingkan RTX 4090.</p>
-        </div>
+  .header h1 {
+    font-size: 28px;
+    margin: 0;
+  }
 
-        <div class="product">
-            <h2>RTX 4070</h2>
-            <p class="price">Rp 20.000.000</p>
-            <p>Performa tinggi dengan harga yang lebih bersahabat, RTX 4070 menawarkan kemampuan untuk menjalankan game AAA dan aplikasi grafis dengan pengaturan tinggi.</p>
-        </div>
+  .header .user-info {
+    display: flex;
+    align-items: center;
+  }
+
+  .header .user-info h5 {
+    margin-right: 20px;
+    font-size: 14px;
+  }
+
+  .header .logout a {
+    text-decoration: none;
+    color: white;
+    background-color: #dc3545;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .header .logout a:hover {
+    background-color: #c82333;
+  }
+
+  /* Add Product Form Section */
+  .add-product-form {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .add-product-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+
+  .add-product-form input,
+  .add-product-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+
+  .add-product-form button {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  .add-product-form button:hover {
+    background-color: #218838;
+  }
+
+  /* Product Section */
+  .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 30px;
+  }
+
+  .product {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, #007bff, #6610f2, #e83e8c, #fd7e14, #ffc107, #28a745);
+    animation: border-gradient 4s linear infinite;
+  }
+
+  @keyframes border-gradient {
+    0% {
+      left: -100%;
+    }
+    50% {
+      left: 100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  .product:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .product h2 {
+    color: #333;
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+
+  .product .price {
+    font-size: 20px;
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .product p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.6;
+  }
+
+  .edit-btn, .delete-btn {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+
+  .delete-btn {
+    background-color: #e74c3c;
+  }
+
+  .edit-btn:hover {
+    background-color: #2980b9;
+  }
+
+  .delete-btn:hover {
+    background-color: #c0392b;
+  }
+
+  /* Footer Section */
+  .footer {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+  }
+
+  .footer p {
+    margin: 0;
+    font-size: 14px;
+  }
+</style>
+
+<!-- Header Section -->
+<div class="header">
+  <h1>Nvloo</h1>
+  <div class="user-info">
+    <h5>Nama user: {{ user.username }}</h5>
+    <h5>Sesi terakhir login: {{ last_login }}</h5>
+    <div class="logout">
+      <a href="{% url 'main:logout' %}">Logout</a>
     </div>
-    {% if not mood_entries %}
-    <p>Belum ada data mood pada mental health tracker.</p>
-    {% else %}
-    <table>
-      <tr>
-        <th>Mood Name</th>
-        <th>Time</th>
-        <th>Feeling</th>
-        <th>Mood Intensity</th>
-      </tr>
-    
-      {% comment %} Berikut cara memperlihatkan data mood di bawah baris ini 
-      {% endcomment %} 
-      {% for mood_entry in mood_entries %}
-      <tr>
-        <td>{{OrderForm.product}}</td>
-        <td>{{OrderForm.quantity}}</td>
-        <td>{{OrderForm.customer_name}}</td>
-        <td>{{OrderForm.customer_email}}</td>
-        <td>{{OrderForm.address}}</td>
-      </tr>
-      {% endfor %}
-    </table>
-    {% endif %}
-    
-    <br />
-    
-    <a href="{% url 'main:order_gpu' %}">
-      <button>Buy New GPU</button>
-    </a>
-    </div>    
-    <h5>Nama Aplikasi: </h5>
-    <p>{{ apk }}</p>
+  </div>
+</div>
 
-    <h5>Name: </h5>
-    <p>{{ name }}</p>
+<!-- Form untuk Menambah Produk -->
+<div class="add-product-form">
+  <h2>Tambah Produk Baru</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+      <button type="submit"><a href="{% url 'main:add_product' %}">Tambah Produk</a></button>
+  </form>
+</div>
 
-    <h5>Class: </h5>
-    <p>{{ class }}</p>
+<!-- Product Section -->
+<div class="container">
+  <!-- Tampilkan produk milik user yang sedang login -->
+  {% if products %}
+    {% for product in products %}
+    <div class="product">
+      <h2>{{ product.name }}</h2>
+      <p class="price">Rp {{ product.price }}</p>
+      <p>{{ product.description }}</p>
+      <a href="{% url 'main:edit_product' product.id %}">
+        <button class="edit-btn">Edit</button>
+      </a>
+      <a href="{% url 'main:delete_product' product.id %}">
+        <button class="delete-btn">Hapus</button>
+      </a>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p>Belum ada produk yang ditambahkan.</p>
+  {% endif %}
+</div>
+
+<!-- Footer Section -->
+<div class="footer">
+  <p>© 2024 Nvloo. All rights reserved.</p>
+</div>
+<footer>
+  <div style="text-align:center; margin-top:50px;">
+      <p>Website ini dibuat oleh: <strong>{{ name }}</strong></p>
+      <p><strong>{{ class }}</strong></p>
+  </div>
+</footer>
 {% endblock content %}

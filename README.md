@@ -1,5 +1,6 @@
 http://pbp.cs.ui.ac.id/sean.farrel/nvloo
 
+
 Tugas 2
 
 1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
@@ -18,8 +19,6 @@ Tugas 2
         Di dalam nama_proyek/nama_proyek/settings.py, tambahkan 'main', ke dalam INSTALLED_APPS.
         Buat file urls.py di dalam folder aplikasi main (jika belum ada), dan tambahkan rute di dalamnya.
         Di dalam nama_proyek/nama_proyek/urls.py, impor include dari django.urls dan tambahkan path menuju main.urls seperti berikut:
-        python
-        Copy code
         from django.urls import include, path
 
         urlpatterns = [
@@ -28,8 +27,6 @@ Tugas 2
     d. Membuat Model 'Product' dengan Atribut
         Langkah:
         Buka main/models.py dan buat model seperti berikut:
-        python
-        Copy code
         from django.db import models
 
         class Product(models.Model):
@@ -43,8 +40,6 @@ Tugas 2
     e. Membuat Fungsi pada views.py untuk Menampilkan Nama Aplikasi dan Nama/Kelas
         Langkah:
         Buka main/views.py dan buat fungsi untuk merender template HTML:
-        python
-        Copy code
         from django.shortcuts import render
 
         def home(request):
@@ -57,8 +52,6 @@ Tugas 2
     f. Routing pada urls.py untuk Mempetakan Fungsi pada views.py
         Langkah:
         Di dalam main/urls.py, tambahkan kode untuk memetakan fungsi:
-        python
-        Copy code
         from django.urls import path
         from . import views
 
@@ -68,8 +61,6 @@ Tugas 2
     g. Deployment ke PWS
         Langkah:
         Pertama, pastikan aplikasi sudah siap untuk deployment. Buat file Procfile dan tambahkan:
-        makefile
-        Copy code
         web: gunicorn nama_proyek.wsgi
         Gunakan layanan seperti PythonAnywhere untuk melakukan deployment. Upload proyek ke platform dan konfigurasikan domain untuk bisa diakses publik.
 
@@ -101,6 +92,7 @@ Menurut saya berdasarkan tutorial - tutorial sebelumnya dan tugas - tugas yang a
 
 5. Mengapa model pada Django disebut sebagai ORM?
 ORM (Object-Relational Mapping) menghubungkan model dalam bentuk objek Python dengan database relasional seperti PostgreSQL atau MySQL, sehingga pengembang bisa bekerja dengan database tanpa menulis query SQL langsung, cukup dengan metode Python. Adanya hubungan - hubungan terkait objek yang satu dengan yang lain juga menjadikan alasan Django dijadikan permulaan pembelajaran seperti pada pertanyaan sebelumnya.
+
 
 Tugas 3
 1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
@@ -164,3 +156,158 @@ Tugas 3
 ![plot](./json.png)
 ![plot](./xml_id.png)
 ![plot](./json_id.png)
+
+
+Tugas 4
+1. Apa perbedaan antara HttpResponseRedirect() dan redirect()
+HttpResponseRedirect():
+
+Ini adalah kelas respons di Django yang digunakan untuk mengalihkan pengguna ke URL yang ditentukan. Ketika Anda menggunakan HttpResponseRedirect(), Anda harus memberikan URL lengkap sebagai argumennya.
+
+Contoh penggunaannya:
+from django.http import HttpResponseRedirect
+
+def my_view(request):
+    return HttpResponseRedirect('/some-url/')
+redirect():
+
+
+Ini adalah fungsi yang lebih tinggi dan lebih mudah digunakan. Fungsi ini dapat menerima argumen dalam beberapa bentuk: URL, nama view (name), atau model instance. Jika diberikan nama view, redirect() akan menangani URL reverse untuk Anda.
+
+Contoh penggunaannya:
+from django.shortcuts import redirect
+
+def my_view(request):
+    return redirect('some_view_name')  # Mengalihkan berdasarkan nama view
+
+2. Jelaskan cara kerja penghubungan model Product dengan User!
+Penghubungan model Product dengan User dilakukan dengan menggunakan ForeignKey. Berikut adalah langkah-langkah untuk menghubungkan model:
+
+Mendefinisikan Model:
+
+Tambahkan field ForeignKey pada model Product yang merujuk ke model User.
+Contoh definisi model:
+from django.db import models
+from django.contrib.auth.models import User
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)  # Menghubungkan dengan User
+    ...
+Migrasi Database:
+
+Jalankan perintah makemigrations dan migrate untuk menerapkan perubahan ke database.
+Penggunaan di Views:
+
+Ketika produk baru ditambahkan, pastikan untuk menyetel owner produk tersebut ke pengguna yang sedang login.
+def add_product(request):
+    if request.method == 'POST':
+        product = Product(name=request.POST['name'], owner=request.user)
+        product.save()
+
+3. Apa perbedaan antara authentication dan authorization, apakah yang dilakukan saat pengguna login? Jelaskan bagaimana Django mengimplementasikan kedua konsep tersebut.
+Authentication:
+Proses untuk memverifikasi identitas pengguna. Ini biasanya dilakukan melalui login dengan username dan password.
+Saat pengguna login, sistem memeriksa kredensial yang dimasukkan dan mengidentifikasi siapa pengguna tersebut.
+
+Authorization:
+Proses untuk menentukan apakah pengguna yang telah terautentikasi memiliki izin untuk melakukan tindakan tertentu atau mengakses sumber daya tertentu.
+Setelah pengguna berhasil login, sistem akan memeriksa hak akses dan peran pengguna untuk menentukan apa yang dapat mereka lakukan.
+
+Berikut adalah penjelasan mengenai pertanyaan-pertanyaan yang Anda ajukan:
+
+1. Apa perbedaan antara HttpResponseRedirect() dan redirect()?
+HttpResponseRedirect():
+
+Ini adalah kelas respons di Django yang digunakan untuk mengalihkan pengguna ke URL yang ditentukan. Ketika Anda menggunakan HttpResponseRedirect(), Anda harus memberikan URL lengkap sebagai argumennya.
+Contoh penggunaannya:
+python
+Copy code
+from django.http import HttpResponseRedirect
+
+def my_view(request):
+    return HttpResponseRedirect('/some-url/')
+redirect():
+
+Ini adalah fungsi yang lebih tinggi dan lebih mudah digunakan. Fungsi ini dapat menerima argumen dalam beberapa bentuk: URL, nama view (name), atau model instance. Jika diberikan nama view, redirect() akan menangani URL reverse untuk Anda.
+Contoh penggunaannya:
+python
+Copy code
+from django.shortcuts import redirect
+
+def my_view(request):
+    return redirect('some_view_name')  # Mengalihkan berdasarkan nama view
+2. Jelaskan cara kerja penghubungan model Product dengan User!
+Penghubungan model Product dengan User dilakukan dengan menggunakan ForeignKey. Berikut adalah langkah-langkah untuk menghubungkan model:
+
+Mendefinisikan Model:
+
+Tambahkan field ForeignKey pada model Product yang merujuk ke model User.
+Contoh definisi model:
+python
+Copy code
+from django.db import models
+from django.contrib.auth.models import User
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)  # Menghubungkan dengan User
+    ...
+Migrasi Database:
+
+Jalankan perintah makemigrations dan migrate untuk menerapkan perubahan ke database.
+Penggunaan di Views:
+
+Ketika produk baru ditambahkan, pastikan untuk menyetel owner produk tersebut ke pengguna yang sedang login.
+python
+Copy code
+def add_product(request):
+    if request.method == 'POST':
+        product = Product(name=request.POST['name'], owner=request.user)
+        product.save()
+3. Apa perbedaan antara authentication dan authorization?
+Authentication:
+
+Proses untuk memverifikasi identitas pengguna. Ini biasanya dilakukan melalui login dengan username dan password.
+Saat pengguna login, sistem memeriksa kredensial yang dimasukkan dan mengidentifikasi siapa pengguna tersebut.
+Authorization:
+
+Proses untuk menentukan apakah pengguna yang telah terautentikasi memiliki izin untuk melakukan tindakan tertentu atau mengakses sumber daya tertentu.
+Setelah pengguna berhasil login, sistem akan memeriksa hak akses dan peran pengguna untuk menentukan apa yang dapat mereka lakukan.
+
+Implementasi di Django:
+Django memiliki sistem authentication yang built-in untuk mengelola login/logout dan memverifikasi identitas pengguna, yang dalam kasus ini terdapat fungsi login dan logout yang termasuk dalam built in Django.
+Untuk authorization, Django menggunakan sistem permission yang bisa dikonfigurasi pada model dan view yang identik, yang dalam kasus ini, setiap user hanya dapat melihat produk yang ditambahkannya masing - masing.
+
+4. Bagaimana Django mengingat pengguna yang telah login? Jelaskan kegunaan lain dari cookies dan apakah semua cookies aman digunakan?
+Django menggunakan sesi untuk mengingat pengguna yang telah login. Ketika pengguna login, Django membuat sesi untuk pengguna tersebut dan menyimpannya di database.
+
+Cookies:
+Django menggunakan cookie untuk menyimpan sesi ID. Cookie ini dikirim ke browser pengguna dan digunakan untuk mengidentifikasi sesi saat pengguna melakukan permintaan berikutnya.
+Kegunaan lain dari cookies:
+Cookies dapat digunakan untuk menyimpan preferensi pengguna, data pelacakan, dan informasi lainnya.
+Tidak semua cookies aman. Cookies yang menyimpan informasi sensitif harus diatur dengan pengaturan keamanan yang tepat, seperti HttpOnly dan Secure.
+
+5.Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+
+Implementasi Registrasi, Login, dan Logout:
+Buat view untuk registrasi, login, dan logout. Gunakan form Django untuk menangani input pengguna.
+Gunakan UserCreationForm untuk registrasi dan authenticate() serta login() untuk login.
+
+Buat Dua Akun Pengguna:
+Buat dua akun pengguna melalui admin panel Django atau menggunakan shell.
+Buat dummy data untuk produk dengan menghubungkan setiap produk ke akun pengguna yang sesuai.
+
+Hubungkan Model Product dengan User:
+Tambahkan ForeignKey dari model Product ke model User seperti yang dijelaskan di atas.
+
+Tampilkan Detail Informasi Pengguna yang Login:
+Di template, gunakan {% if user.is_authenticated %} untuk menampilkan username pengguna dan informasi lain yang relevan.
+
+Terapkan Cookies untuk Last Login:
+Setel cookie di view saat pengguna login, dan ambil nilai cookie di halaman utama.
+
+Menangani Error dan Pengujian:
+Uji semua fungsi yang diimplementasikan, termasuk login, logout, dan pengelolaan produk untuk memastikan semuanya berfungsi dengan baik.
+![plot](./dummy1.png)
+![plot](./dummy2.png)

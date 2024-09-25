@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Desain Responsif */
+  body {
+    background-color: #f4f6f9;
+    font-family: 'Arial', sans-serif;
+  }
+
+  .add-product-form {
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 50px auto;
+    max-width: 600px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.8s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .add-product-form h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+
+  .add-product-form label {
+    font-size: 14px;
+    color: #34495e;
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+  }
+
+  .add-product-form input, 
+  .add-product-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 2px solid #ecf0f1;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    outline: none;
+  }
+
+  .add-product-form input:focus, 
+  .add-product-form textarea:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+  }
+
+  .add-product-form textarea {
+    resize: vertical;
+  }
+
+  .add-product-form button {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #3498db, #2ecc71);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 30px;
+    transition: background 0.3s ease-in-out;
+    font-weight: bold;
+  }
+
+  .add-product-form button:hover {
+    background: linear-gradient(135deg, #2980b9, #27ae60);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .add-product-form button:active {
+    transform: scale(0.98);
+  }
+
+  /* Responsif untuk layar kecil */
+  @media (max-width: 768px) {
+    .add-product-form {
+      padding: 20px;
+    }
+
+    .add-product-form h2 {
+      font-size: 24px;
+    }
+
+    .add-product-form button {
+      padding: 12px;
+      font-size: 14px;
+    }
+  }
+</style>
+
+<!-- Form untuk Menambah Produk -->
+<div class="add-product-form">
+  <h2>Tambah Produk Baru</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Tambah Produk</button>
+  </form>
+</div>
+
+{% endblock content %}
