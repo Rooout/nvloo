@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Form Styles */
+.form-style form input, 
+.form-style form textarea, 
+.form-style form select {
+    @apply w-full py-3 px-4 border-2 border-gray-300 rounded-md focus:outline-none transition duration-300 ease-in-out;
+}
+
+.form-style form input:focus, 
+.form-style form textarea:focus, 
+.form-style form select:focus {
+    @apply border-indigo-500 shadow-lg ring-2 ring-indigo-300;
+}
+
+/* Animation for Input Focus */
+.form-style form input:focus, 
+.form-style form textarea:focus, 
+.form-style form select:focus {
+    @apply border-indigo-500 shadow-md ring-2 ring-indigo-500 transition duration-300 ease-in-out;
+}
+
+/* Shine Animation */
+@keyframes shine {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.animate-shine {
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.3));
+    background-size: 200% 100%;
+    animation: shine 2.5s ease-in-out infinite;
+}
+
+/* Custom Submit Button */
+.btn-submit {
+    @apply bg-indigo-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:bg-indigo-700 hover:shadow-xl focus:ring-4 focus:ring-indigo-400 focus:ring-opacity-50;
+}
+
+/* Animation on hover */
+.btn-submit:hover {
+    @apply animate-shine;
+}
+
+/* Label Styles */
+.form-style label {
+    @apply block font-semibold text-gray-700 mb-2;
+}
+
+/* Custom Placeholder Styling */
+::placeholder {
+    @apply text-gray-400;
+}
+
+/* Card Styling */
+.card {
+    @apply bg-white p-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl;
+}
+
+.card-header {
+    @apply text-xl font-bold text-indigo-600 mb-4;
+}
+
+.card-body {
+    @apply text-gray-600;
+}

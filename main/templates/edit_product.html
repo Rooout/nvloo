@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+
+    <!-- Load static files -->
+    {% load static %} <!-- Menambahkan ini untuk memuat tag static -->
+
+    <!-- Link to Tailwind CSS -->
+    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet"> <!-- Pastikan Anda telah mengimpor Tailwind CSS dengan benar -->
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <!-- Container -->
+    <div class="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+        <h1 class="text-2xl font-semibold text-gray-700 text-center mb-6">Edit Product</h1>
+        
+        <!-- Form -->
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded mt-4">
+                Save Changes
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>
+{% endblock content%}

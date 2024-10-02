@@ -14,6 +14,6 @@ urlpatterns = [
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
     path('product/<uuid:product_id>/', add_product, name='add_product'),
-    path('edit-product/<uuid:product_id>/', edit_product, name ='edit_product'),
-    path('delete-product/<uuid:product_id>/', delete_product, name ='delete_product')
+    path('edit_product/<uuid:product_id>/', edit_product, name ='edit_product'),
+    path('delete_product/<uuid:product_id>/', delete_product, name ='delete_product')
 ]

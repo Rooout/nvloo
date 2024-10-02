@@ -1,120 +1,114 @@
 {% extends 'base.html' %}
 
 {% block meta %}
-<title>Login</title>
+<title>Login - Welcome Back!</title>
+<style>
+    @keyframes gradientBG {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+    .gradient-bg {
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+    }
+    .glassmorphism {
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+</style>
 {% endblock meta %}
 
 {% block content %}
+<div class="min-h-screen flex items-center justify-center w-screen gradient-bg py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 glassmorphism p-8">
+        <div>
+            <h2 class="mt-6 text-center text-4xl font-extrabold text-white">
+                Welcome Back!
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-200">
+                Let's get you logged in
+            </p>
+        </div>
+        <form class="mt-8 space-y-6" method="POST" action="">
+            {% csrf_token %}
+            <input type="hidden" name="remember" value="true">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div class="mb-4">
+                    <label for="username" class="sr-only">Username</label>
+                    <input id="username" name="username" type="text" required class="appearance-none rounded-t-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm transition duration-300 ease-in-out transform hover:scale-105" placeholder="Username">
+                </div>
+                <div>
+                    <label for="password" class="sr-only">Password</label>
+                    <input id="password" name="password" type="password" required class="appearance-none rounded-b-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm transition duration-300 ease-in-out transform hover:scale-105" placeholder="Password">
+                </div>
+            </div>
 
-<style>
-  .login-container {
-    max-width: 400px;
-    margin: 50px auto;
-    background-color: #f2f2f2;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-  }
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-purple-500 group-hover:text-purple-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                    Sign in
+                </button>
+            </div>
+        </form>
 
-  .login-container h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 30px;
-    font-size: 24px;
-  }
+        {% if messages %}
+        <div class="mt-4">
+            {% for message in messages %}
+            {% if message.tags == "success" %}
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105" role="alert">
+                    <p class="font-bold">Success</p>
+                    <p>{{ message }}</p>
+                </div>
+            {% elif message.tags == "error" %}
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105" role="alert">
+                    <p class="font-bold">Error</p>
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105" role="alert">
+                    <p class="font-bold">Info</p>
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
 
-  .login-container form {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .login-container form input[type="text"],
-  .login-container form input[type="email"],
-  .login-container form input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-  }
-
-  .login-container form input[type="submit"] {
-    background-color: #3498db;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
-    margin-top: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .login-container form input[type="submit"]:hover {
-    background-color: #2980b9;
-  }
-
-  .login-container .form-footer {
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .login-container .form-footer p {
-    margin: 0;
-    font-size: 14px;
-    color: #555;
-  }
-
-  .login-container .form-footer a {
-    color: #3498db;
-    text-decoration: none;
-    font-weight: bold;
-  }
-
-  .login-container .form-footer a:hover {
-    text-decoration: underline;
-  }
-
-  .messages {
-    color: #e74c3c;
-    margin-top: 20px;
-  }
-
-  .messages ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .messages li {
-    margin: 5px 0;
-    font-weight: bold;
-  }
-</style>
-
-<div class="login-container">
-  <h1>Login</h1>
-
-  <form method="POST" action="">
-    {% csrf_token %}
-    {{ form.as_p }}
-
-    <input type="submit" value="Login">
-  </form>
-
-  {% if messages %}
-  <div class="messages">
-    <ul>
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
-
-  <div class="form-footer">
-    <p>Don't have an account? <a href="{% url 'main:register' %}">Register Now</a></p>
-  </div>
+        <div class="text-center mt-4">
+            <p class="text-sm text-white">
+                Don't have an account yet?
+                <a href="{% url 'main:register' %}" class="font-medium text-purple-300 hover:text-purple-200 transition duration-300 ease-in-out">
+                    Register Now
+                </a>
+            </p>
+        </div>
+    </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const form = document.querySelector('form');
+    const inputs = form.querySelectorAll('input[type="text"], input[type="password"]');
+    
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            input.classList.add('scale-105');
+        });
+        
+        input.addEventListener('blur', () => {
+            input.classList.remove('scale-105');
+        });
+    });
+});
+</script>
 {% endblock content %}

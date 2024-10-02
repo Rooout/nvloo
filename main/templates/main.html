@@ -1,251 +1,80 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f6f9;
-  }
+{% load static %}
+{% include 'navbar.html' %}
 
-  /* Header Section */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #007bff;
-    padding: 15px 30px;
-    color: white;
-    border-bottom: 5px solid #0056b3;
-  }
+<div class="min-h-screen bg-gradient-to-r from-blue-50 to-indigo-100 flex flex-col justify-between">
 
-  .header h1 {
-    font-size: 28px;
-    margin: 0;
-  }
+    <!-- Header Section -->
+    <header class="bg-blue-600 py-6 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <h1 class="text-3xl font-bold text-white">Nvloo</h1>
+            <div class="flex items-center space-x-6">
+                <div class="text-white">
+                    <p class="text-lg font-semibold">Welcome, {{ user.username }}</p>
+                    <p class="text-sm">Last login: {{ last_login }}</p>
+                </div>
+                <a href="{% url 'main:logout' %}" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300">
+                    Logout
+                </a>
+            </div>
+        </div>
+    </header>
 
-  .header .user-info {
-    display: flex;
-    align-items: center;
-  }
+    <!-- Card Info Section -->
+    <section class="container mx-auto px-6 py-8">
+        {% include 'card_info.html' %}
+    </section>
 
-  .header .user-info h5 {
-    margin-right: 20px;
-    font-size: 14px;
-  }
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        
+        <!-- Button to Add New Product -->
+        <div class="flex justify-end mb-6">
+            <a href="{% url 'main:add_product' %}" class="bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl hover:from-blue-500 hover:to-green-400 transition duration-300 ease-in-out transform hover:scale-105">
+                + Add New Product
+            </a>
+        </div>
 
-  .header .logout a {
-    text-decoration: none;
-    color: white;
-    background-color: #dc3545;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
+        <!-- Add Product Form Section -->
+        <section class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Validation</h2>
+            <form method="POST" class="space-y-4">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="flex justify-center">
+                    <button type="submit" class="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105">
+                        Click
+                    </button>
+                </div>
+            </form>
+        </section>
 
-  .header .logout a:hover {
-    background-color: #c82333;
-  }
+        <!-- Product List Section -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% if products %}
+                <!-- Iterasi Menampilkan Produk dari card_product.html -->
+                {% for product in products %}
+                    {% include 'card_product.html' %}
+                {% endfor %}
+            {% else %}
+                <!-- Tampilkan Gambar sedih_banget.png Jika Tidak Ada Produk -->
+                <div class="flex flex-col items-center justify-center">
+                    <img src="{% static 'images/sedih_banget.png' %}" alt="No Products" class="w-64 h-64 mb-6">
+                    <p class="text-center text-gray-600 text-lg">You haven't added any products yet.</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
 
-  /* Add Product Form Section */
-  .add-product-form {
-    background-color: #ffffff;
-    border-radius: 15px;
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 600px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-  }
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 py-4">
+        <div class="container mx-auto text-center text-white">
+            <p class="text-sm">Website created by <strong>{{ name }}</strong> and <strong>{{ class }}</strong>.</p>
+            <p class="text-xs mt-2">© 2024 Nvloo. All rights reserved.</p>
+        </div>
+    </footer>
 
-  .add-product-form h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-  }
-
-  .add-product-form input,
-  .add-product-form textarea {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-    box-sizing: border-box;
-  }
-
-  .add-product-form button {
-    width: 100%;
-    background-color: #28a745;
-    color: white;
-    padding: 15px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease-in-out;
-  }
-
-  .add-product-form button:hover {
-    background-color: #218838;
-  }
-
-  /* Product Section */
-  .container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin: 30px;
-  }
-
-  .product {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .product::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 5px;
-    background: linear-gradient(to right, #007bff, #6610f2, #e83e8c, #fd7e14, #ffc107, #28a745);
-    animation: border-gradient 4s linear infinite;
-  }
-
-  @keyframes border-gradient {
-    0% {
-      left: -100%;
-    }
-    50% {
-      left: 100%;
-    }
-    100% {
-      left: 100%;
-    }
-  }
-
-  .product:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  }
-
-  .product h2 {
-    color: #333;
-    font-size: 22px;
-    margin-bottom: 10px;
-  }
-
-  .product .price {
-    font-size: 20px;
-    color: #28a745;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-
-  .product p {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 15px;
-    line-height: 1.6;
-  }
-
-  .edit-btn, .delete-btn {
-    background-color: #3498db;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 10px;
-    transition: background-color 0.3s;
-  }
-
-  .delete-btn {
-    background-color: #e74c3c;
-  }
-
-  .edit-btn:hover {
-    background-color: #2980b9;
-  }
-
-  .delete-btn:hover {
-    background-color: #c0392b;
-  }
-
-  /* Footer Section */
-  .footer {
-    background-color: #343a40;
-    color: white;
-    text-align: center;
-    padding: 20px;
-    margin-top: 50px;
-  }
-
-  .footer p {
-    margin: 0;
-    font-size: 14px;
-  }
-</style>
-
-<!-- Header Section -->
-<div class="header">
-  <h1>Nvloo</h1>
-  <div class="user-info">
-    <h5>Nama user: {{ user.username }}</h5>
-    <h5>Sesi terakhir login: {{ last_login }}</h5>
-    <div class="logout">
-      <a href="{% url 'main:logout' %}">Logout</a>
-    </div>
-  </div>
 </div>
-
-<!-- Form untuk Menambah Produk -->
-<div class="add-product-form">
-  <h2>Tambah Produk Baru</h2>
-  <form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-      <button type="submit"><a href="{% url 'main:add_product' %}">Tambah Produk</a></button>
-  </form>
-</div>
-
-<!-- Product Section -->
-<div class="container">
-  <!-- Tampilkan produk milik user yang sedang login -->
-  {% if products %}
-    {% for product in products %}
-    <div class="product">
-      <h2>{{ product.name }}</h2>
-      <p class="price">Rp {{ product.price }}</p>
-      <p>{{ product.description }}</p>
-      <a href="{% url 'main:edit_product' product.id %}">
-        <button class="edit-btn">Edit</button>
-      </a>
-      <a href="{% url 'main:delete_product' product.id %}">
-        <button class="delete-btn">Hapus</button>
-      </a>
-    </div>
-    {% endfor %}
-  {% else %}
-    <p>Belum ada produk yang ditambahkan.</p>
-  {% endif %}
-</div>
-
-<!-- Footer Section -->
-<div class="footer">
-  <p>© 2024 Nvloo. All rights reserved.</p>
-</div>
-<footer>
-  <div style="text-align:center; margin-top:50px;">
-      <p>Website ini dibuat oleh: <strong>{{ name }}</strong></p>
-      <p><strong>{{ class }}</strong></p>
-  </div>
-</footer>
 {% endblock content %}

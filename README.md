@@ -311,3 +311,45 @@ Menangani Error dan Pengujian:
 Uji semua fungsi yang diimplementasikan, termasuk login, logout, dan pengelolaan produk untuk memastikan semuanya berfungsi dengan baik.
 ![plot](./dummy1.png)
 ![plot](./dummy2.png)
+
+Tugas 5
+1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+Inline Style (paling tinggi)
+ID Selector (#id)
+Class Selector (.class), attribute, dan pseudo-class (:hover, :focus)
+Tag Selector (h1, p)
+
+
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+Responsive design memastikan aplikasi dapat diakses dengan baik di berbagai perangkat dengan ukuran layar berbeda. Ini penting karena semakin banyak pengguna mengakses web melalui ponsel.
+
+Contoh yang Menerapkan: Google — tata letak dan elemen seperti tombol beradaptasi dengan ukuran layar.
+Contoh yang Tidak Menerapkan: Aplikasi web lama yang hanya dioptimalkan untuk desktop
+
+
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+Margin: Ruang di luar elemen, digunakan untuk mengatur jarak antara elemen lain.
+Border: Garis yang mengelilingi elemen, membatasi konten dari padding dan margin.
+Padding: Ruang di dalam elemen antara border dan konten, membuat konten tidak menempel langsung pada border.
+Contoh implementasi:
+.box {
+    margin: 20px;
+    padding: 10px;
+    border: 2px solid black;
+}
+
+4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+Flexbox: Sistem layout 1 dimensi, berguna untuk mengatur elemen secara row atau column. Contohnya adalah menyusun elemen secara horizontal di navbar.
+Grid Layout: Sistem layout 2 dimensi yang lebih fleksibel, berguna untuk membuat layout grid kompleks seperti galeri gambar.
+Kegunaan:
+
+Flexbox untuk menyusun elemen sebaris (horizontal atau vertikal).
+Grid untuk membuat tata letak lebih kompleks dengan baris dan kolom.
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+Fungsi Edit dan Delete: Implementasikan view untuk menangani form edit dan logika delete produk.
+Kustomisasi Halaman:
+Kustomisasi halaman login, register, dan tambah produk dengan Tailwind.
+Buat daftar produk dengan card yang menarik, responsif dengan grid.
+Navbar Responsif: Implementasikan navbar dengan hamburger menu di mobile, dan tampilan horizontal di desktop.
+Penanganan Kondisi Produk Kosong: Tampilkan gambar dan pesan ketika tidak ada produk yang tersimpan.
