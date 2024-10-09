@@ -214,15 +214,13 @@ Authorization:
 Proses untuk menentukan apakah pengguna yang telah terautentikasi memiliki izin untuk melakukan tindakan tertentu atau mengakses sumber daya tertentu.
 Setelah pengguna berhasil login, sistem akan memeriksa hak akses dan peran pengguna untuk menentukan apa yang dapat mereka lakukan.
 
-Berikut adalah penjelasan mengenai pertanyaan-pertanyaan yang Anda ajukan:
-
 1. Apa perbedaan antara HttpResponseRedirect() dan redirect()?
 HttpResponseRedirect():
 
 Ini adalah kelas respons di Django yang digunakan untuk mengalihkan pengguna ke URL yang ditentukan. Ketika Anda menggunakan HttpResponseRedirect(), Anda harus memberikan URL lengkap sebagai argumennya.
 Contoh penggunaannya:
 python
-Copy code
+
 from django.http import HttpResponseRedirect
 
 def my_view(request):
@@ -232,7 +230,7 @@ redirect():
 Ini adalah fungsi yang lebih tinggi dan lebih mudah digunakan. Fungsi ini dapat menerima argumen dalam beberapa bentuk: URL, nama view (name), atau model instance. Jika diberikan nama view, redirect() akan menangani URL reverse untuk Anda.
 Contoh penggunaannya:
 python
-Copy code
+
 from django.shortcuts import redirect
 
 def my_view(request):
@@ -245,7 +243,7 @@ Mendefinisikan Model:
 Tambahkan field ForeignKey pada model Product yang merujuk ke model User.
 Contoh definisi model:
 python
-Copy code
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -260,7 +258,7 @@ Penggunaan di Views:
 
 Ketika produk baru ditambahkan, pastikan untuk menyetel owner produk tersebut ke pengguna yang sedang login.
 python
-Copy code
+
 def add_product(request):
     if request.method == 'POST':
         product = Product(name=request.POST['name'], owner=request.user)
@@ -353,3 +351,178 @@ Kustomisasi halaman login, register, dan tambah produk dengan Tailwind.
 Buat daftar produk dengan card yang menarik, responsif dengan grid.
 Navbar Responsif: Implementasikan navbar dengan hamburger menu di mobile, dan tampilan horizontal di desktop.
 Penanganan Kondisi Produk Kosong: Tampilkan gambar dan pesan ketika tidak ada produk yang tersimpan.
+
+Tugas 6
+
+1. Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!
+JavaScript adalah bahasa pemrograman yang digunakan untuk membuat aplikasi web interaktif dan dinamis. Berikut adalah beberapa manfaatnya:
+
+- Interaktivitas: JavaScript memungkinkan pengembang untuk menambahkan elemen interaktif, seperti animasi, pemrosesan form secara real-time, dan validasi input tanpa perlu memuat ulang halaman.
+- Responsif: Dengan JavaScript, elemen-elemen pada halaman dapat diubah dan diperbarui secara langsung tanpa harus meminta seluruh halaman dari server. Ini meningkatkan responsivitas dan kecepatan aplikasi web.
+- Single Page Applications (SPA): Dengan JavaScript, framework seperti React, Vue, dan Angular digunakan untuk membangun SPA, di mana halaman tidak perlu dimuat ulang sepenuhnya ketika pengguna berpindah antar halaman.
+- Komunikasi Asynchronous: JavaScript memungkinkan penggunaan AJAX dan Fetch API untuk komunikasi dengan server secara asynchronous, sehingga halaman web dapat mengambil atau mengirim data tanpa perlu memuat ulang halaman secara keseluruhan.
+- Manajemen DOM: JavaScript memungkinkan manipulasi elemen DOM (Document Object Model) untuk mengubah, menambah, atau menghapus elemen HTML, memperbarui tampilan secara dinamis sesuai dengan interaksi pengguna.
+
+2. Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
+await digunakan untuk menunggu hasil dari operasi asinkron seperti fetch() sebelum melanjutkan ke kode berikutnya. Ketika kita menggunakan fetch(), ia mengembalikan Promise, yang menunjukkan bahwa hasil dari operasi tersebut mungkin belum tersedia (asinkron). Dengan menambahkan await, kita memastikan bahwa kita menunggu hingga fetch() selesai (hasilnya tersedia) sebelum melanjutkan ke langkah berikutnya.
+
+Jika kita tidak menggunakan await, maka JavaScript tidak akan menunggu hasil dari fetch(), dan akan langsung melanjutkan eksekusi kode berikutnya. Ini bisa menyebabkan Promise tidak selesai pada saat kita mencoba memproses hasil dari fetch(), sehingga kita mungkin mengakses data yang belum ada atau terjadi kesalahan.
+
+3. Mengapa kita perlu menggunakan decorator csrf_exempt pada view yang akan digunakan untuk AJAX POST?
+Django secara default mengaktifkan CSRF (Cross-Site Request Forgery) protection untuk semua permintaan POST. CSRF adalah serangan di mana penyerang dapat memanfaatkan identitas pengguna yang sah untuk mengirim permintaan berbahaya.
+
+Namun, ketika kita mengirim permintaan AJAX POST, CSRF token harus dikirim bersama data permintaan agar permintaan tersebut dianggap sah oleh Django. Jika kita tidak mengirim CSRF token dengan benar atau sengaja ingin mengabaikan perlindungan CSRF (misalnya dalam API atau komunikasi trusted), kita menggunakan csrf_exempt untuk menonaktifkan pemeriksaan CSRF pada view tersebut. Namun, sebaiknya penggunaan csrf_exempt dibatasi hanya pada situasi di mana tidak ada resiko keamanan, seperti API internal.
+
+4. Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?
+Meskipun validasi dan pembersihan input di frontend penting untuk pengalaman pengguna yang baik (misalnya, memberikan umpan balik instan), frontend tidak boleh menjadi satu-satunya garis pertahanan. Alasannya:
+
+- Keamanan: Frontend sepenuhnya berada di sisi klien dan dapat dengan mudah dimanipulasi oleh pengguna atau penyerang. Validasi frontend dapat dilewati dengan memodifikasi kode JavaScript di browser atau mengirim permintaan langsung ke server menggunakan alat seperti Postman.
+- Konsistensi: Backend adalah tempat terakhir di mana data diproses sebelum masuk ke database. Pembersihan dan validasi data di backend memastikan konsistensi, dan mencegah input yang tidak valid atau berbahaya (seperti XSS, SQL injection) masuk ke sistem.
+- Integritas Data: Hanya backend yang dapat berinteraksi langsung dengan database. Jadi, untuk menjaga integritas data, backend harus bertanggung jawab untuk memastikan semua data yang disimpan sudah valid, aman, dan sesuai dengan aturan aplikasi.
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+AJAX GET: Mengambil Data Produk Milik Pengguna Logged-in
+Tujuan: Untuk menampilkan daftar produk milik pengguna yang sedang login secara asinkronus menggunakan AJAX GET, tanpa perlu reload halaman.
+
+Langkah Implementasi:
+
+View untuk AJAX GET: Buatlah sebuah view baru di views.py yang akan mengambil data produk dari database berdasarkan pengguna yang sedang login, lalu mengirimkannya dalam format JSON.
+
+from django.http import JsonResponse
+from main.models import Product
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def get_product_data(request):
+    # Mengambil semua produk yang dimiliki oleh user yang login
+    products = Product.objects.filter(user=request.user)
+    product_data = list(products.values('id', 'name', 'description', 'price', 'quantity'))
+    
+    return JsonResponse({'products': product_data}, status=200)
+JavaScript untuk Mengambil dan Menampilkan Produk: Tambahkan kode JavaScript untuk mengambil data produk dari backend menggunakan fetch() dan menampilkannya pada halaman.
+
+async function fetchProductData() {
+    const response = await fetch("/product-data/");
+    const data = await response.json();
+
+    let productHTML = '';
+    data.products.forEach((product) => {
+        productHTML += `
+            <div class="card bg-white p-6 rounded-lg shadow-md mb-4">
+                <h3 class="text-2xl font-bold">${product.name}</h3>
+                <p>${product.description}</p>
+                <span class="text-green-600">Rp ${product.price}</span>
+                <p>Stock: ${product.quantity}</p>
+            </div>
+        `;
+    });
+    document.getElementById('product-list').innerHTML = productHTML;
+}
+
+// Panggil fungsi fetchProductData untuk menampilkan produk saat halaman dimuat
+fetchProductData();
+HTML untuk Menampilkan Produk: Pastikan ada sebuah elemen <div> di halaman tempat data produk akan dimasukkan.
+
+
+<div id="product-list"></div>
+AJAX POST: Menambahkan Produk Baru Menggunakan Modal
+Tujuan: Membuat sebuah modal form yang memungkinkan pengguna menambahkan produk baru secara asinkronus. Setelah produk berhasil ditambahkan, modal akan tertutup dan daftar produk diperbarui tanpa reload halaman.
+
+Langkah Implementasi:
+
+View untuk AJAX POST: Buat view di views.py yang akan memproses form penambahan produk dan menyimpannya ke database.
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+
+@csrf_exempt
+def create_product_ajax(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        quantity = request.POST.get('quantity')
+
+        if not name or not description or not price or not quantity:
+            return JsonResponse({'error': 'All fields are required'}, status=400)
+
+        product = Product(
+            name=name,
+            description=description,
+            price=price,
+            quantity=quantity,
+            user=request.user
+        )
+        product.save()
+
+        return JsonResponse({'message': 'Product added successfully!'}, status=201)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+HTML untuk Modal dan Tombol Tambah Produk: Buat tombol yang akan memunculkan modal form untuk menambahkan produk baru.
+
+<button id="openModalButton" class="bg-indigo-500 text-white p-4 rounded-lg">Add New Product</button>
+
+<div id="productModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <form id="productForm">
+            <label for="name">Product Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+
+            <label for="price">Price (Rp):</label>
+            <input type="number" id="price" name="price" required>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" required>
+
+            <button type="submit">Add Product</button>
+        </form>
+    </div>
+</div>
+JavaScript untuk AJAX POST: Tambahkan event listener pada form agar dapat menambahkan produk menggunakan AJAX dan menutup modal setelah produk berhasil ditambahkan.
+
+document.getElementById('productForm').addEventListener('submit', async function(event) {
+    event.preventDefault();  // Mencegah form submit normal
+    
+    const formData = new FormData(this);
+    const response = await fetch('/create-product-ajax/', {
+        method: 'POST',
+        body: formData,
+    });
+
+    const result = await response.json();
+    if (response.status === 201) {
+        alert(result.message);  // Tampilkan pesan sukses
+        document.getElementById('productForm').reset();  // Reset form
+        document.getElementById('productModal').classList.add('hidden');  // Tutup modal
+        fetchProductData();  // Refresh data produk
+    } else {
+        alert(result.error);  // Tampilkan pesan error
+    }
+});
+
+// Function to show modal
+document.getElementById('openModalButton').addEventListener('click', function() {
+    document.getElementById('productModal').classList.remove('hidden');
+});
+Refresh Produk Secara Asinkronus: Setiap kali produk berhasil ditambahkan menggunakan AJAX POST, halaman akan diperbarui dengan fetchProductData() tanpa perlu reload halaman secara keseluruhan.
+
+Step-by-Step Implementasi Checklist:
+Menambahkan Produk Secara Asinkronus:
+
+Buat modal dengan tombol "Add New Product" yang memicu form untuk menambahkan produk.
+Implementasikan AJAX POST untuk menambahkan produk baru dengan memanggil view yang memproses data produk.
+Jika berhasil, modal akan tertutup dan form akan di-reset.
+Mengambil Produk Secara Asinkronus:
+
+Buat AJAX GET untuk mengambil data produk dari backend. Data ini hanya diambil untuk produk milik pengguna yang sedang login.
+Produk yang berhasil diambil akan ditampilkan di halaman dengan menambahkan elemen HTML baru.
+Validasi dan Error Handling:
+
+Jika ada field yang kosong, tampilkan pesan error di frontend dengan menampilkan alert atau pesan kesalahan.
+Validasi juga dilakukan di backend dengan view create_product_ajax() untuk memastikan input produk valid.
+Aspek Desain dan UX:
+
+Modal yang muncul memberikan UX yang baik karena pengguna tidak perlu reload halaman.
+Pengguna mendapatkan notifikasi langsung apakah penambahan produk berhasil atau tidak.
