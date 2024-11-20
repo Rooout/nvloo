@@ -6,21 +6,7 @@
 
 <div class="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 flex flex-col justify-between">
 
-    <!-- Header Section -->
-    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 py-8 shadow-xl">
-        <div class="container mx-auto flex justify-between items-center px-6">
-            <h1 class="text-4xl font-extrabold text-white tracking-wide">Nvloo</h1>
-            <div class="flex items-center space-x-8">
-                <div class="text-white text-right">
-                    <p class="text-xl font-semibold">Welcome, {{ user.username }}</p>
-                    <p class="text-sm opacity-80">Last login: {{ last_login }}</p>
-                </div>
-                <a href="{% url 'main:logout' %}" class="px-6 py-3 bg-red-500 text-white font-bold rounded-full hover:bg-red-600 transition duration-300 transform hover:scale-105 hover:shadow-lg">
-                    Logout
-                </a>
-            </div>
-        </div>
-    </header>
+
 
     <!-- Card Info Section -->
     <section class="container mx-auto px-6 py-12">
@@ -60,6 +46,8 @@
               <!-- Modal body -->
               <div class="px-6 py-4 space-y-6 form-style">
                 <form id="productForm">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  
                   <div class="mb-4">
                     <label for="product_name" class="block text-sm font-medium text-gray-700">Product Name</label>
                     <input type="text" id="product_name" name="product_name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter product name" required>
@@ -72,13 +60,8 @@
                     <label for="price" class="block text-sm font-medium text-gray-700">Price (Rp)</label>
                     <input type="number" id="price" name="price" min="1" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter price" required>
                   </div>
-                  <div class="mb-4">
-                    <label for="quantity" class="block text-sm font-medium text-gray-700">Stock Quantity</label>
-                    <input type="number" id="quantity" name="quantity" min="1" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter stock quantity" required>
-                  </div>
                 </form>
               </div>
-              <!-- Modal footer -->
               <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
                 <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">Cancel</button>
                 <button type="submit" id="submitProduct" form="productForm" class="bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg">Save</button>
@@ -104,50 +87,84 @@
 
 <script>
 
+
+
+document.getElementById("submitProduct").addEventListener("click", addProduct);
+
 function addProduct() {
-    fetch("{% url 'main:add_product_ajax' %}", {
-      method: "POST",
-      body: new FormData(document.querySelector('#productForm')),
-    })
-    .then(response => refreshProducts())
+  // Ambil nilai dari form
+  const formData = {
+    name: document.getElementById("product_name").value,
+    description: document.getElementById("description").value,
+    price: document.getElementById("price").value,
+  };
 
-    document.getElementById("productForm").reset(); 
-    document.querySelector("[data-modal-toggle='crudModal']").click();
+  fetch("/add-product-ajax/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", // Mengirimkan data sebagai JSON
+      "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+    },
+    body: JSON.stringify(formData), // Ubah data form menjadi JSON string
+  })
+  .then(response => {
+    console.log("Response status:", response.status);
+    console.log("Response text:", response.statusText);
 
-    return false;
-  }
-    async function getProducts(){
-        return fetch("{% url 'main:show_json' %}").then((res) => res.json())
+    if (!response.ok) {
+      throw new Error("Data submission failed");
     }
+    return response.json();
+  })
+  .then(data => {
+    console.log("Success:", data);
+    refreshProducts(); // Fungsi untuk memperbarui daftar produk
+    hideModal(); // Tutup modal setelah sukses
+    document.getElementById("productForm").reset(); // Reset form
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    alert("Failed to save product. Please try again.");
+  });
 
-    const modal = document.getElementById('crudModal');
-  const modalContent = document.getElementById('crudModalContent');
+  return false; // Mencegah refresh halaman
+}
 
-  function showModal() {
-      const modal = document.getElementById('crudModal');
-      const modalContent = document.getElementById('crudModalContent');
 
-      modal.classList.remove('hidden'); 
-      setTimeout(() => {
-        modalContent.classList.remove('opacity-0', 'scale-95');
-        modalContent.classList.add('opacity-100', 'scale-100');
-      }, 50); 
+
+async function getProducts() {
+  try {
+    const response = await fetch("{% url 'main:show_json' %}");
+    if (!response.ok) throw new Error("Failed to fetch products");
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
   }
+}
 
-  function hideModal() {
-      const modal = document.getElementById('crudModal');
-      const modalContent = document.getElementById('crudModalContent');
+// Fungsi untuk menampilkan dan menyembunyikan modal
+const modal = document.getElementById('crudModal');
+const modalContent = document.getElementById('crudModalContent');
 
-      modalContent.classList.remove('opacity-100', 'scale-100');
-      modalContent.classList.add('opacity-0', 'scale-95');
+function showModal() {
+  modal.classList.remove('hidden');
+  setTimeout(() => {
+    modalContent.classList.remove('opacity-0', 'scale-95');
+    modalContent.classList.add('opacity-100', 'scale-100');
+  }, 50);
+}
 
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 150); 
-  }
+function hideModal() {
+  modalContent.classList.remove('opacity-100', 'scale-100');
+  modalContent.classList.add('opacity-0', 'scale-95');
+  setTimeout(() => {
+    modal.classList.add('hidden');
+  }, 150);
+}
 
-  document.getElementById("cancelButton").addEventListener("click", hideModal);
-  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+document.getElementById("cancelButton").addEventListener("click", hideModal);
+document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+
 
   async function refreshProducts() {
     document.getElementById("product_cards").innerHTML = "";
@@ -160,7 +177,7 @@ function addProduct() {
         classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
         htmlString = `
             <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
-                <img src="{% static 'image/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
+                <img src="{% static 'images/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
                 <p class="text-center text-gray-600 mt-4">Belum ada data product pada nvloo.</p>
             </div>
         `;
@@ -205,7 +222,6 @@ refreshProducts();
 
 document.getElementById("productForm").addEventListener("submit", (e) => {
     e.preventDefault();
-    addProduct();
   })
 
   </script>

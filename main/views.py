@@ -14,7 +14,10 @@ from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
-import json
+import json, logging
+
+# Inisialisasi logger
+logger = logging.getLogger(__name__)
 
 # Fungsi untuk menambah produk via halaman biasa (non-AJAX)
 def add_product(request):
@@ -34,19 +37,21 @@ def add_product(request):
 @csrf_exempt
 @require_POST
 def add_product_ajax(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Anda harus login untuk menambahkan produk."}, status=403)
+
     try:
+        # Memuat dan membersihkan data
         data = json.loads(request.body.decode('utf-8'))
-
-        # Membersihkan dan memvalidasi input dari pengguna
         product_name = strip_tags(data.get('name', '').strip())
-        price = data.get('price')
         description = strip_tags(data.get('description', '').strip())
+        price = data.get('price')
 
-        # Validasi jika ada field yang kosong
+        # Validasi: Memastikan semua field terisi
         if not product_name or not price or not description:
             return JsonResponse({"error": "Semua field harus diisi!"}, status=400)
 
-        # Validasi harga agar merupakan angka positif
+        # Validasi harga agar bernilai positif
         try:
             price = float(price)
             if price <= 0:
@@ -54,12 +59,12 @@ def add_product_ajax(request):
         except ValueError:
             return JsonResponse({"error": "Harga tidak valid."}, status=400)
 
-        # Membuat produk baru dan menyimpannya ke database
+        # Menyimpan produk baru ke database
         new_product = Product(
             name=product_name,
-            price=price,
             description=description,
-            user=request.user  # Mengaitkan produk dengan user yang login
+            price=price,
+            user=request.user  # Mengaitkan produk dengan pengguna yang login
         )
         new_product.save()
 
@@ -70,14 +75,16 @@ def add_product_ajax(request):
                 "id": str(new_product.id),
                 "name": new_product.name,
                 "price": new_product.price,
-                "description": new_product.description
+                "description": new_product.description,
             }
         }, status=201)
 
     except json.JSONDecodeError:
+        logger.error("JSON decoding failed", exc_info=True)
         return JsonResponse({"error": "Data tidak valid."}, status=400)
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        logger.error("Unexpected error occurred", exc_info=True)
+        return JsonResponse({"error": "Terjadi kesalahan pada server."}, status=500)
 
 def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -139,6 +146,7 @@ def show_json_by_id(request, id):
     data = Product.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
+
 def register(request):
     form = UserCreationForm()
 
@@ -174,3 +182,21 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        new_product = Product.objects.create(
+            user=request.user,
+            product=data["product"],
+            description=data["description"],
+            price=int(data["price"])
+        )
+
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
